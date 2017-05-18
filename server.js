@@ -32,13 +32,24 @@ udpPort.open();
 //
 // }
 
-function logValues(){
+function logRelativeValues(){
 	console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
-  console.log('Delta (1-4Hz):    ' + museDelta + ' Relative: ' + deltaRelative + '%');
-  console.log('Theta (4-8Hz):    ' + museTheta + ' Relative: ' + thetaRelative + '%');
-  console.log('Alpha (8-13Hz):   ' + museAlpha + ' Relative: ' + alphaRelative + '%');
-  console.log('Beta: (13-30Hz):  ' + museBeta + ' Relative: ' + betaRelative + '%');
-  console.log('Gamma (30-44Hz): ' + museGamma + ' Relative: ' + gammaRelative + '%');
+  console.log('Delta (1-4Hz):   ' + deltaRelative + '%');
+  console.log('Theta (4-8Hz):   ' + thetaRelative + '%');
+  console.log('Alpha (8-13Hz):  ' + alphaRelative + '%');
+  console.log('Beta: (13-30Hz): ' + betaRelative + '%');
+  console.log('Gamma (30-44Hz): ' + gammaRelative + '%');
+  console.log('\n')
+
+}
+
+function logAbsoluteValues(){
+  console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
+  console.log('Delta (1-4Hz):   ' + museDelta);
+  console.log('Theta (4-8Hz):   ' + museTheta);
+  console.log('Alpha (8-13Hz):  ' + museAlpha);
+  console.log('Beta: (13-30Hz): ' + museBeta);
+  console.log('Gamma (30-44Hz): ' + museGamma);
   console.log('\n')
 
 }
@@ -139,14 +150,14 @@ udpPort.on("message", function (oscData) {
 
 });
 
-setTimeout(function(){
-  logValues();
-}, 1000)
+// setTimeout(function(){
+//   logValues();
+// }, 1000)
 
 
 setInterval(function(){
-  logValues();
-}, 3000)
+  logAbsoluteValues();
+}, 950)
 
 
 // setTimeout(function(){
