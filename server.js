@@ -22,34 +22,72 @@ var udpPort = new osc.UDPPort({
 udpPort.open();
 
 
+// function logValues(){
+//   console.log('Alpha: ' + museAlpha);
+//   console.log('Beta: ' + museBeta);
+//   console.log('Delta: ' + museDelta);
+//   console.log('Theta: ' + museTheta);
+//   console.log('Gamma: ' + museGamma);
+//   console.log('\n')
+//
+// }
 
+function logValues(){
+  console.log('Delta (1-4Hz):    ' + museDelta);
+  console.log('Theta (4-8Hz):    ' + museTheta);
+  console.log('Alpha (8-13Hz):   ' + museAlpha);
+  console.log('Beta: (13-30Hz):  ' + museBeta);
+  console.log('Gamma (30-44Hz): ' + museGamma);
+  console.log('\n')
+
+}
 
 // SEEMINGLY WORKING //
+
+let oscAddress, museAlpha, museBeta, museDelta, museTheta, museGamma;
 
 // Listen for incoming OSC bundles.
 udpPort.on("message", function (oscData) {
 
-
 	oscAddress = oscData.address;
 
 	if(oscAddress == '/muse/elements/alpha_absolute'){
-    museAlpha = oscData.args[0];
-    console.log(museAlpha + ' muse alpha')
+    museAlpha = oscData.args[0].toFixed(4);
 	}
+  if(oscAddress == '/muse/elements/beta_absolute'){
+    museBeta = oscData.args[0].toFixed(4);
+  }
+  if(oscAddress == '/muse/elements/delta_absolute'){
+    museDelta = oscData.args[0].toFixed(4);
+  }
+  if(oscAddress == '/muse/elements/theta_absolute'){
+    museTheta = oscData.args[0].toFixed(4);
+  }
+  if(oscAddress == '/muse/elements/gamma_absolute'){
+    museGamma= oscData.args[0].toFixed(4);
+  }
 });
 
-setTimeout(function(){
-  console.log('Alpha Absolute: ' + museAlpha);
-}, 2000);
-
-setTimeout(function(){
-  console.log('Alpha Absolute: ' + museAlpha);
-}, 4000);
 
 
 setTimeout(function(){
-  console.log('Alpha Absolute: ' + museAlpha);
-}, 6000);
+  logValues();
+}, 1000)
+
+setInterval(function(){
+  logValues();
+}, 5000)
+
+// setTimeout(function(){
+//   console.log('Alpha Absolute: ' + museAlpha);
+// }, 4000);
+//
+//
+// setTimeout(function(){
+//   console.log('Alpha Absolute: ' + museAlpha);
+// }, 6000);
+
+// SEEMINGLY WORKING //
 
 
 
