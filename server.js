@@ -33,11 +33,12 @@ udpPort.open();
 // }
 
 function logValues(){
-  console.log('Delta (1-4Hz):    ' + museDelta);
-  console.log('Theta (4-8Hz):    ' + museTheta);
-  console.log('Alpha (8-13Hz):   ' + museAlpha);
-  console.log('Beta: (13-30Hz):  ' + museBeta);
-  console.log('Gamma (30-44Hz): ' + museGamma);
+	console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
+  console.log('Delta (1-4Hz):    ' + museDelta + ' Relative: ' + deltaRelative);
+  console.log('Theta (4-8Hz):    ' + museTheta + ' Relative: ' + thetaRelative);
+  console.log('Alpha (8-13Hz):   ' + museAlpha + ' Relative: ' + alphaRelative);
+  console.log('Beta: (13-30Hz):  ' + museBeta + ' Relative: ' + betaRelative);
+  console.log('Gamma (30-44Hz): ' + museGamma + ' Relative: ' + gammaRelative);
   console.log('\n')
 
 }
@@ -45,6 +46,10 @@ function logValues(){
 // SEEMINGLY WORKING //
 
 let oscAddress, museAlpha, museBeta, museDelta, museTheta, museGamma;
+
+let alphaRelative, betaRelative, deltaRelative, thetaRelative, gammaRelative;
+
+let totalWaves;
 
 // Listen for incoming OSC bundles.
 udpPort.on("message", function (oscData) {
@@ -60,11 +65,11 @@ udpPort.on("message", function (oscData) {
 
 
   if(oscAddress == '/muse/elements/jaw_clench'){
-    console.log('Jaw Clench: '  + oscData.args);
+    console.log('Jaw Clench: '  + oscData.args + '\n');
   }
 
 	if(oscAddress == '/muse/batt'){
-		console.log('Battery: '  + oscData.args);
+		console.log('Battery: '  + oscData.args + '\n');
 	}
 
   // if(oscAddress == '/muse/elements/blink'){
@@ -91,30 +96,39 @@ udpPort.on("message", function (oscData) {
     museGamma= Number(oscData.args[0].toFixed(4));
   }
 
-	const totalWaves = museAlpha + museBeta + museDelta + museTheta + museGamma;
-
-  let alphaRelative, betaRelative, deltaRelative, thetaRelative, gammaRelative;
+	totalWaves = museAlpha + museBeta + museDelta + museTheta + museGamma;
 
   if(oscAddress == '/muse/elements/alpha_absolute'){
     alphaRelative = museAlpha / totalWaves;
+    alphaRelative  = Math.round(alphaRelative * 100);
+
     // console.log('Alpha relative' + alphaRelative);
   }
+
   if(oscAddress == '/muse/elements/beta_absolute'){
-    museBeta = Number(oscData.args[0].toFixed(4));
+    betaRelative = museBeta / totalWaves;
+    betaRelative  = Math.round(betaRelative * 100);
+
   }
+
   if(oscAddress == '/muse/elements/delta_absolute'){
-    museDelta = Number(oscData.args[0].toFixed(4));
+    deltaRelative = museDelta / totalWaves;
+    deltaRelative  = Math.round(deltaRelative * 100);
   }
+
   if(oscAddress == '/muse/elements/theta_absolute'){
-    museTheta = Number(oscData.args[0].toFixed(4));
+    thetaRelative = museTheta / totalWaves;
+    thetaRelative  = Math.round(thetaRelative * 100);
   }
+
   if(oscAddress == '/muse/elements/gamma_absolute'){
-    museGamma= Number(oscData.args[0].toFixed(4));
+		gammaRelative = museGamma / totalWaves;
+    gammaRelative  = Math.round(gammaRelative * 100);
   }
 
 
 
-  console.log(totalWaves)
+  // console.log(totalWaves)
 
 
 
