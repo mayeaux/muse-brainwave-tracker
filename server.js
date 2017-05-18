@@ -62,15 +62,15 @@ udpPort.on("message", function (oscData) {
 
   oscAddress = oscData.address;
 	const oscValue =  oscData.args[0].toFixed(4);
-
-
-  if(oscAddress == '/muse/elements/jaw_clench'){
-    console.log('Jaw Clench: '  + oscData.args + '\n');
-  }
-
-	if(oscAddress == '/muse/batt'){
-		console.log('Battery: '  + oscData.args + '\n');
-	}
+  //
+  //
+  // if(oscAddress == '/muse/elements/jaw_clench'){
+   //  console.log('Jaw Clench: '  + oscData.args + '\n');
+  // }
+  //
+	// if(oscAddress == '/muse/batt'){
+	// 	console.log('Battery: '  + oscData.args + '\n');
+	// }
 
   // if(oscAddress == '/muse/elements/blink'){
   //   console.log('Blink: '  + oscData.args);
