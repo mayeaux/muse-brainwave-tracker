@@ -72,6 +72,7 @@ udpPort.on("message", function (oscData) {
   // }
 
 
+
 	// add up all 5 of the values
 	// divide it
   if(oscAddress == '/muse/elements/alpha_absolute'){
@@ -89,6 +90,31 @@ udpPort.on("message", function (oscData) {
   if(oscAddress == '/muse/elements/gamma_absolute'){
     museGamma= Number(oscData.args[0].toFixed(4));
   }
+
+	const totalWaves = museAlpha + museBeta + museDelta + museTheta + museGamma;
+
+  let alphaRelative, betaRelative, deltaRelative, thetaRelative, gammaRelative;
+
+  if(oscAddress == '/muse/elements/alpha_absolute'){
+    alphaRelative = museAlpha / totalWaves;
+    // console.log('Alpha relative' + alphaRelative);
+  }
+  if(oscAddress == '/muse/elements/beta_absolute'){
+    museBeta = Number(oscData.args[0].toFixed(4));
+  }
+  if(oscAddress == '/muse/elements/delta_absolute'){
+    museDelta = Number(oscData.args[0].toFixed(4));
+  }
+  if(oscAddress == '/muse/elements/theta_absolute'){
+    museTheta = Number(oscData.args[0].toFixed(4));
+  }
+  if(oscAddress == '/muse/elements/gamma_absolute'){
+    museGamma= Number(oscData.args[0].toFixed(4));
+  }
+
+
+
+  console.log(totalWaves)
 
 
 
