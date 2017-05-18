@@ -49,34 +49,65 @@ let oscAddress, museAlpha, museBeta, museDelta, museTheta, museGamma;
 // Listen for incoming OSC bundles.
 udpPort.on("message", function (oscData) {
 
-	oscAddress = oscData.address;
+	// console.log(oscData);
 
-	if(oscAddress == '/muse/elements/alpha_absolute'){
-    museAlpha = oscData.args[0].toFixed(4);
+  // alpha_relative = alpha_absolute / (alpha_absolute + beta_absolute + delta_absolute + gamma_absolute + theta_absolute)
+
+
+
+  oscAddress = oscData.address;
+	const oscValue =  oscData.args[0].toFixed(4);
+
+
+  if(oscAddress == '/muse/elements/jaw_clench'){
+    console.log('Jaw Clench: '  + oscData.args);
+  }
+
+	if(oscAddress == '/muse/batt'){
+		console.log('Battery: '  + oscData.args);
 	}
+
+  // if(oscAddress == '/muse/elements/blink'){
+  //   console.log('Blink: '  + oscData.args);
+  // }
+
+
+	// add up all 5 of the values
+	// divide it
+  if(oscAddress == '/muse/elements/alpha_absolute'){
+    museAlpha = Number(oscData.args[0].toFixed(4));
+  }
   if(oscAddress == '/muse/elements/beta_absolute'){
-    museBeta = oscData.args[0].toFixed(4);
+    museBeta = Number(oscData.args[0].toFixed(4));
   }
   if(oscAddress == '/muse/elements/delta_absolute'){
-    museDelta = oscData.args[0].toFixed(4);
+    museDelta = Number(oscData.args[0].toFixed(4));
   }
   if(oscAddress == '/muse/elements/theta_absolute'){
-    museTheta = oscData.args[0].toFixed(4);
+    museTheta = Number(oscData.args[0].toFixed(4));
   }
   if(oscAddress == '/muse/elements/gamma_absolute'){
-    museGamma= oscData.args[0].toFixed(4);
+    museGamma= Number(oscData.args[0].toFixed(4));
   }
+
+
+
+
+
+
+  //
+
 });
-
-
 
 setTimeout(function(){
   logValues();
 }, 1000)
 
+
 setInterval(function(){
   logValues();
 }, 5000)
+
 
 // setTimeout(function(){
 //   console.log('Alpha Absolute: ' + museAlpha);
