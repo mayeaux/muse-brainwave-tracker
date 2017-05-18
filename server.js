@@ -34,11 +34,11 @@ udpPort.open();
 
 function logValues(){
 	console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
-  console.log('Delta (1-4Hz):    ' + museDelta + ' Relative: ' + deltaRelative);
-  console.log('Theta (4-8Hz):    ' + museTheta + ' Relative: ' + thetaRelative);
-  console.log('Alpha (8-13Hz):   ' + museAlpha + ' Relative: ' + alphaRelative);
-  console.log('Beta: (13-30Hz):  ' + museBeta + ' Relative: ' + betaRelative);
-  console.log('Gamma (30-44Hz): ' + museGamma + ' Relative: ' + gammaRelative);
+  console.log('Delta (1-4Hz):    ' + museDelta + ' Relative: ' + deltaRelative + '%');
+  console.log('Theta (4-8Hz):    ' + museTheta + ' Relative: ' + thetaRelative + '%');
+  console.log('Alpha (8-13Hz):   ' + museAlpha + ' Relative: ' + alphaRelative + '%');
+  console.log('Beta: (13-30Hz):  ' + museBeta + ' Relative: ' + betaRelative + '%');
+  console.log('Gamma (30-44Hz): ' + museGamma + ' Relative: ' + gammaRelative + '%');
   console.log('\n')
 
 }
@@ -146,7 +146,7 @@ setTimeout(function(){
 
 setInterval(function(){
   logValues();
-}, 5000)
+}, 3000)
 
 
 // setTimeout(function(){
