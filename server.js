@@ -22,76 +22,22 @@ var udpPort = new osc.UDPPort({
 
 udpPort.open();
 
-
-// function logValues(){
-//   console.log('Alpha: ' + museAlpha);
-//   console.log('Beta: ' + museBeta);
-//   console.log('Delta: ' + museDelta);
-//   console.log('Theta: ' + museTheta);
-//   console.log('Gamma: ' + museGamma);
-//   console.log('\n')
-//
-// }
-
-function logRelativeValues(){
-	console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
-  console.log('Delta (1-4Hz):   ' + deltaRelative + '%');
-  console.log('Theta (4-8Hz):   ' + thetaRelative + '%');
-  console.log('Alpha (8-13Hz):  ' + alphaRelative + '%');
-  console.log('Beta: (13-30Hz): ' + betaRelative + '%');
-  console.log('Gamma (30-44Hz): ' + gammaRelative + '%');
-  console.log('\n')
-
-}
-
-function logAbsoluteValues(){
-  console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
-  console.log('Delta (1-4Hz):   ' + museDelta);
-  console.log('Theta (4-8Hz):   ' + museTheta);
-  console.log('Alpha (8-13Hz):  ' + museAlpha);
-  console.log('Beta: (13-30Hz): ' + museBeta);
-  console.log('Gamma (30-44Hz): ' + museGamma);
-  console.log('\n')
-
-}
-
-function logAbsoluteValuesExponentiated(){
-  for(const brainwave of brainwaves){
-    console.log(brainwave);
-  }
-  console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
-  console.log('Delta (1-4Hz):   ' + Math.pow(10, museDelta));
-  console.log('Theta (4-8Hz):   ' + Math.pow(10, museTheta));
-  console.log('Alpha (8-13Hz):  ' + Math.pow(10, museAlpha));
-  console.log('Beta: (13-30Hz): ' + Math.pow(10, museBeta));
-  console.log('Gamma (30-44Hz): ' + Math.pow(10, museGamma));
-  console.log('\n')
-
-}
-
 function logBrainwaves(){
-  for(const brainwave of brainwaves){
-    console.log(`${brainwave} ${museData.frequencies[brainwave]}:  ${Math.pow(10, museData.absoluteValues[brainwave])})`);
+  let totalWaves = 0
 
+  for(const brainwave of brainwaves){
+    totalWaves += museData.absoluteValues[brainwave]
+  }
+  console.log(`Total Charge: ${totalWaves.toFixed(2)}`)
+
+  for(const brainwave of brainwaves){
+    console.log(`${brainwave} ${museData.frequencies[brainwave]}: ${((museData.absoluteValues[brainwave]/totalWaves) * 100).toFixed(2)} %`);
   }
   console.log('\n')
 
-  //
-  // console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
-  // console.log('Delta (1-4Hz):   ' + Math.pow(10, museDelta));
-  // console.log('Theta (4-8Hz):   ' + Math.pow(10, museTheta));
-  // console.log('Alpha (8-13Hz):  ' + Math.pow(10, museAlpha));
-  // console.log('Beta: (13-30Hz): ' + Math.pow(10, museBeta));
-  // console.log('Gamma (30-44Hz): ' + Math.pow(10, museGamma));
-  // console.log('\n')
-
 }
 
-// SEEMINGLY WORKING //
-
-let oscAddress, museAlpha, museBeta, museDelta, museTheta, museGamma;
-
-let alphaRelative, betaRelative, deltaRelative, thetaRelative, gammaRelative;
+let oscAddress;
 
 const brainwaves = ['delta', 'theta', 'alpha', 'beta', 'gamma'];
 
@@ -110,8 +56,6 @@ let museData = {
 // Listen for incoming OSC bundles.
 udpPort.on("message", function (oscData) {
 
-  let totalWaves = 0;
-
   oscAddress = oscData.address;
 
   // start building up data
@@ -126,18 +70,6 @@ udpPort.on("message", function (oscData) {
     }
   }
 
-  // calculate total wave
-  if(!_.isEmpty(museData.absoluteValues)){
-
-    for (let [brainwave, absoluteValue] of Object.entries(museData.absoluteValues)){
-      totalWaves = totalWaves += absoluteValue
-    }
-  }
-
-
-
-	const oscValue =  oscData.args[0].toFixed(4);
-  //
   //
   // if(oscAddress == '/muse/elements/jaw_clench'){
    //  console.log('Jaw Clench: '  + oscData.args + '\n');
@@ -153,35 +85,14 @@ udpPort.on("message", function (oscData) {
 
 
 
-	// add up all 5 of the values
-	// divide it
-  if(oscAddress == '/muse/elements/alpha_absolute'){
-    museAlpha = Number(oscData.args[0].toFixed(4));
-  }
-
-
-  if(oscAddress == '/muse/elements/alpha_absolute') {
-    alphaRelative = museAlpha / totalWaves;
-    alphaRelative = Math.round(alphaRelative * 100);
-  }
 
 });
 
-// setTimeout(function(){
-//   for(const brainwave of brainwaves){
-//     console.log(global[brainwave] + ' ' + brainwave)
-//   }
-//   console.log(museData);
-// }, 950)
-
-// setTimeout(function(){
-//   logValues();
-// }, 1000)
-
 
 setInterval(function(){
+
   logBrainwaves();
-  // logRelativeValues();
+
 }, 950)
 
 
