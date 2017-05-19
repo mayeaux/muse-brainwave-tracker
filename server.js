@@ -56,6 +56,9 @@ function logAbsoluteValues(){
 }
 
 function logAbsoluteValuesExponentiated(){
+  for(const brainwave of brainwaves){
+    console.log(brainwave);
+  }
   console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
   console.log('Delta (1-4Hz):   ' + Math.pow(10, museDelta));
   console.log('Theta (4-8Hz):   ' + Math.pow(10, museTheta));
@@ -66,17 +69,42 @@ function logAbsoluteValuesExponentiated(){
 
 }
 
+function logBrainwaves(){
+  for(const brainwave of brainwaves){
+    console.log(`${brainwave} ${museData.frequencies[brainwave]}:  ${Math.pow(10, museData.absoluteValues[brainwave])})`);
+
+  }
+  console.log('\n')
+
+  //
+  // console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
+  // console.log('Delta (1-4Hz):   ' + Math.pow(10, museDelta));
+  // console.log('Theta (4-8Hz):   ' + Math.pow(10, museTheta));
+  // console.log('Alpha (8-13Hz):  ' + Math.pow(10, museAlpha));
+  // console.log('Beta: (13-30Hz): ' + Math.pow(10, museBeta));
+  // console.log('Gamma (30-44Hz): ' + Math.pow(10, museGamma));
+  // console.log('\n')
+
+}
+
 // SEEMINGLY WORKING //
 
 let oscAddress, museAlpha, museBeta, museDelta, museTheta, museGamma;
 
 let alphaRelative, betaRelative, deltaRelative, thetaRelative, gammaRelative;
 
-const brainwaves = ['alpha', 'beta', 'theta', 'delta', 'gamma'];
+const brainwaves = ['delta', 'theta', 'alpha', 'beta', 'gamma'];
 
 let museData = {
   absoluteValues : {},
-  relativeBandPower : {}
+  relativeBandPower : {},
+  frequencies : {
+    alpha: '(8-13Hz)',
+    beta: '(13-30Hz)',
+    delta: '(1-4Hz)',
+    gamma: '(30-44Hz)',
+    theta: '(4-8Hz)'
+  }
 };
 
 // Listen for incoming OSC bundles.
@@ -86,6 +114,7 @@ udpPort.on("message", function (oscData) {
 
   oscAddress = oscData.address;
 
+  // start building up data
   for(const brainwave of brainwaves){
     let oscPath = `/muse/elements/${brainwave}_absolute`;
     if(oscPath == oscAddress){
@@ -97,18 +126,12 @@ udpPort.on("message", function (oscData) {
     }
   }
 
-  // console.log('hello')
-  //
-  // console.log(museData.absoluteValues);
-
-  console.log(_.isEmpty(museData.absoluteValues))
-
+  // calculate total wave
   if(!_.isEmpty(museData.absoluteValues)){
 
     for (let [brainwave, absoluteValue] of Object.entries(museData.absoluteValues)){
       totalWaves = totalWaves += absoluteValue
     }
-    console.log(totalWaves);
   }
 
 
@@ -157,6 +180,7 @@ udpPort.on("message", function (oscData) {
 
 
 setInterval(function(){
+  logBrainwaves();
   // logRelativeValues();
 }, 950)
 
