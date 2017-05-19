@@ -19,11 +19,8 @@ var udpPort = new osc.UDPPort({
 
 udpPort.open();
 
-function logAntiloggedBrainwaves(){
-  for(const brainwave of brainwaves) {
-    console.log(`${brainwave} ${Math.pow(10, museData.absoluteValues[brainwave])}`);
-  }
-  console.log('\n')
+String.prototype.capitalize = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
 function logBrainwaves(){
@@ -38,10 +35,21 @@ function logBrainwaves(){
   }
   console.log(`Total Charge: ${totalWaves.toFixed(2)}`)
 
-  for(const brainwave of brainwaves){
+  let keysSorted = Object.keys(museData.absoluteValues).sort(function(a,b){return museData.absoluteValues[a]-museData.absoluteValues[b]})
+
+  for(const brainwave of keysSorted){
     console.log(`${brainwave} ${museData.frequencies[brainwave]}: ${((museData.absoluteValues[brainwave]/totalWaves) * 100).toFixed(2)} %`);
   }
-  console.log('\n')
+
+  console.log('\n');
+
+  // console.log(keysSorted)
+  //
+  // console.log('\n')
+  //
+  // console.log(museData.absoluteValues)
+  //
+  // console.log('\n')
 
 }
 
