@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var express = require('express');
 var app = express();
 var redis = require('redis')
@@ -6,10 +7,6 @@ var osc = require('osc')
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var bodyParser = require('body-parser')
-
-var lastPointTime = Date.now();
-var now;
-var _ = require('lodash');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded())
@@ -22,7 +19,18 @@ var udpPort = new osc.UDPPort({
 
 udpPort.open();
 
+function logAntiloggedBrainwaves(){
+  for(const brainwave of brainwaves) {
+    console.log(`${brainwave} ${Math.pow(10, museData.absoluteValues[brainwave])}`);
+  }
+  console.log('\n')
+}
+
 function logBrainwaves(){
+  let date = new Date().toLocaleTimeString();
+
+  console.log(date);
+
   let totalWaves = 0
 
   for(const brainwave of brainwaves){
@@ -41,6 +49,7 @@ let oscAddress;
 
 const brainwaves = ['delta', 'theta', 'alpha', 'beta', 'gamma'];
 
+// hold all data in memory
 let museData = {
   absoluteValues : {},
   relativeBandPower : {},
@@ -66,25 +75,8 @@ udpPort.on("message", function (oscData) {
 
       // getting the data
       museData.absoluteValues[brainwave] = absoluteBrainwaveValue;
-      museData.relativeBandPower[brainwave] = Math.pow(10,absoluteBrainwaveValue);
     }
   }
-
-  //
-  // if(oscAddress == '/muse/elements/jaw_clench'){
-   //  console.log('Jaw Clench: '  + oscData.args + '\n');
-  // }
-  //
-	// if(oscAddress == '/muse/batt'){
-	// 	console.log('Battery: '  + oscData.args + '\n');
-	// }
-
-  // if(oscAddress == '/muse/elements/blink'){
-  //   console.log('Blink: '  + oscData.args);
-  // }
-
-
-
 
 });
 
@@ -93,19 +85,7 @@ setInterval(function(){
 
   logBrainwaves();
 
-}, 950)
-
-
-// setTimeout(function(){
-//   console.log('Alpha Absolute: ' + museAlpha);
-// }, 4000);
-//
-//
-// setTimeout(function(){
-//   console.log('Alpha Absolute: ' + museAlpha);
-// }, 6000);
-
-// SEEMINGLY WORKING //
+}, 1000);
 
 
 
@@ -157,5 +137,5 @@ setInterval(function(){
 
 var port = Number(process.env.PORT || 3000);
 server.listen(port, function() {
-  console.log("Listening on " + port);
+  console.log("Listening on " + port + '\n');
 });
