@@ -9,6 +9,7 @@ var bodyParser = require('body-parser')
 
 var lastPointTime = Date.now();
 var now;
+var _ = require('lodash');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded())
@@ -54,24 +55,64 @@ function logAbsoluteValues(){
 
 }
 
+function logAbsoluteValuesExponentiated(){
+  console.log('Total Charge ' + Math.round(totalWaves * 100) / 100);
+  console.log('Delta (1-4Hz):   ' + Math.pow(10, museDelta));
+  console.log('Theta (4-8Hz):   ' + Math.pow(10, museTheta));
+  console.log('Alpha (8-13Hz):  ' + Math.pow(10, museAlpha));
+  console.log('Beta: (13-30Hz): ' + Math.pow(10, museBeta));
+  console.log('Gamma (30-44Hz): ' + Math.pow(10, museGamma));
+  console.log('\n')
+
+}
+
 // SEEMINGLY WORKING //
 
 let oscAddress, museAlpha, museBeta, museDelta, museTheta, museGamma;
 
 let alphaRelative, betaRelative, deltaRelative, thetaRelative, gammaRelative;
 
-let totalWaves;
+const brainwaves = ['alpha', 'beta', 'theta', 'delta', 'gamma'];
+
+let museData = {
+  absoluteValues : {},
+  relativeBandPower : {}
+};
 
 // Listen for incoming OSC bundles.
 udpPort.on("message", function (oscData) {
 
-	// console.log(oscData);
-
-  // alpha_relative = alpha_absolute / (alpha_absolute + beta_absolute + delta_absolute + gamma_absolute + theta_absolute)
-
-
+  let totalWaves = 0;
 
   oscAddress = oscData.address;
+
+  for(const brainwave of brainwaves){
+    let oscPath = `/muse/elements/${brainwave}_absolute`;
+    if(oscPath == oscAddress){
+      const absoluteBrainwaveValue = oscData.args[0];
+
+      // getting the data
+      museData.absoluteValues[brainwave] = absoluteBrainwaveValue;
+      museData.relativeBandPower[brainwave] = Math.pow(10,absoluteBrainwaveValue);
+    }
+  }
+
+  // console.log('hello')
+  //
+  // console.log(museData.absoluteValues);
+
+  console.log(_.isEmpty(museData.absoluteValues))
+
+  if(!_.isEmpty(museData.absoluteValues)){
+
+    for (let [brainwave, absoluteValue] of Object.entries(museData.absoluteValues)){
+      totalWaves = totalWaves += absoluteValue
+    }
+    console.log(totalWaves);
+  }
+
+
+
 	const oscValue =  oscData.args[0].toFixed(4);
   //
   //
@@ -94,61 +135,21 @@ udpPort.on("message", function (oscData) {
   if(oscAddress == '/muse/elements/alpha_absolute'){
     museAlpha = Number(oscData.args[0].toFixed(4));
   }
-  if(oscAddress == '/muse/elements/beta_absolute'){
-    museBeta = Number(oscData.args[0].toFixed(4));
-  }
-  if(oscAddress == '/muse/elements/delta_absolute'){
-    museDelta = Number(oscData.args[0].toFixed(4));
-  }
-  if(oscAddress == '/muse/elements/theta_absolute'){
-    museTheta = Number(oscData.args[0].toFixed(4));
-  }
-  if(oscAddress == '/muse/elements/gamma_absolute'){
-    museGamma= Number(oscData.args[0].toFixed(4));
-  }
 
-	totalWaves = museAlpha + museBeta + museDelta + museTheta + museGamma;
 
-  if(oscAddress == '/muse/elements/alpha_absolute'){
+  if(oscAddress == '/muse/elements/alpha_absolute') {
     alphaRelative = museAlpha / totalWaves;
-    alphaRelative  = Math.round(alphaRelative * 100);
-
-    // console.log('Alpha relative' + alphaRelative);
+    alphaRelative = Math.round(alphaRelative * 100);
   }
-
-  if(oscAddress == '/muse/elements/beta_absolute'){
-    betaRelative = museBeta / totalWaves;
-    betaRelative  = Math.round(betaRelative * 100);
-
-  }
-
-  if(oscAddress == '/muse/elements/delta_absolute'){
-    deltaRelative = museDelta / totalWaves;
-    deltaRelative  = Math.round(deltaRelative * 100);
-  }
-
-  if(oscAddress == '/muse/elements/theta_absolute'){
-    thetaRelative = museTheta / totalWaves;
-    thetaRelative  = Math.round(thetaRelative * 100);
-  }
-
-  if(oscAddress == '/muse/elements/gamma_absolute'){
-		gammaRelative = museGamma / totalWaves;
-    gammaRelative  = Math.round(gammaRelative * 100);
-  }
-
-
-
-  // console.log(totalWaves)
-
-
-
-
-
-
-  //
 
 });
+
+// setTimeout(function(){
+//   for(const brainwave of brainwaves){
+//     console.log(global[brainwave] + ' ' + brainwave)
+//   }
+//   console.log(museData);
+// }, 950)
 
 // setTimeout(function(){
 //   logValues();
@@ -156,7 +157,7 @@ udpPort.on("message", function (oscData) {
 
 
 setInterval(function(){
-  logAbsoluteValues();
+  // logRelativeValues();
 }, 950)
 
 
