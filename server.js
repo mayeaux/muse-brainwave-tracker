@@ -37,7 +37,7 @@ function logBrainwaves(){
 
   let keysSorted = Object.keys(museData.absoluteValues).sort(function(a,b){return museData.absoluteValues[a]-museData.absoluteValues[b]})
 
-  for(const brainwave of keysSorted){
+  for(const brainwave of brainwaves){
     console.log(`${brainwave} ${museData.frequencies[brainwave]}: ${((museData.absoluteValues[brainwave]/totalWaves) * 100).toFixed(2)} %`);
   }
 
