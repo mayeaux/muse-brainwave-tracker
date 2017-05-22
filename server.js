@@ -111,28 +111,28 @@ setInterval(function(){
 
 // OLD CODE //
 
-// io.on('connection', function (socket) {
-//     console.log("socket.io connection");
-//   	socket.emit('news', { hello: 'world' });
-// /*
-// 	setInterval(function(){
-// 		var testData = {
-// 			address: "/muse/eeg",
-// 			args: [100, 200, 300, 400]
-// 		}
-// 		socket.emit('news', testData);
-// 	}, 1000);
-// */
-//   	// Listen for incoming OSC bundles.
-// 	udpPort.on("message", function (oscData) {
-// 		now = Date.now()
-// 		if((now-lastPointTime <= 1000) || (lastPointTime-now <= 1000)) {
-// 			lastPointTime = now
-// 			socket.emit('news', oscData);
-// 		}
-// 	});
-//
-// });
+io.on('connection', function (socket) {
+    console.log("socket.io connection");
+  	socket.emit('news', { hello: 'world' });
+
+	setInterval(function(){
+		var testData = {
+			address: "/muse/eeg",
+			args: [100, 200, 300, 400]
+		}
+		socket.emit('news', testData);
+	}, 1000);
+
+  	// Listen for incoming OSC bundles.
+	udpPort.on("message", function (oscData) {
+		now = Date.now()
+		if((now-lastPointTime <= 1000) || (lastPointTime-now <= 1000)) {
+			lastPointTime = now
+			socket.emit('news', oscData);
+		}
+	});
+
+});
 
 // OLD CODE //
 
