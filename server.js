@@ -21,25 +21,32 @@ udpPort.open();
 
 String.prototype.capitalize = function() {
   return this.charAt(0).toUpperCase() + this.slice(1);
-}
+};
 
 function logBrainwaves(){
   let date = new Date().toLocaleTimeString();
 
   console.log(date);
 
-  let totalWaves = 0
+  let totalWaves = 0;
 
   for(const brainwave of brainwaves){
     totalWaves += museData.absoluteValues[brainwave]
   }
-  console.log(`Total Charge: ${totalWaves.toFixed(2)}`)
+  console.log(`Total Charge: ${totalWaves.toFixed(2)}`);
+  // let keysSorted = Object.keys(museData.absoluteValues).sort(function(a,b){return museData.absoluteValues[a]-museData.absoluteValues[b]})
 
-  let keysSorted = Object.keys(museData.absoluteValues).sort(function(a,b){return museData.absoluteValues[a]-museData.absoluteValues[b]})
+  //
+  // for(const brainwave of brainwaves){
+  //   console.log(`${brainwave} ${museData.frequencies[brainwave]}: ${((museData.absoluteValues[brainwave]/totalWaves) * 100).toFixed(2)} %`);
+  // }
 
   for(const brainwave of brainwaves){
-    console.log(`${brainwave} ${museData.frequencies[brainwave]}: ${((museData.absoluteValues[brainwave]/totalWaves) * 100).toFixed(2)} %`);
+    const absoluteWave = museData.absoluteValues[brainwave];
+
+    console.log(`${brainwave} ${museData.frequencies[brainwave]}: ${absoluteWave.toFixed(2)}`);
   }
+
 
   console.log('\n');
 
@@ -72,6 +79,7 @@ let museData = {
 
 // Listen for incoming OSC bundles.
 udpPort.on("message", function (oscData) {
+  // console.log(oscData);
 
   oscAddress = oscData.address;
 
@@ -81,8 +89,8 @@ udpPort.on("message", function (oscData) {
     if(oscPath == oscAddress){
       const absoluteBrainwaveValue = oscData.args[0];
 
-      // getting the data
-      museData.absoluteValues[brainwave] = absoluteBrainwaveValue;
+      // getting the data, adding one to make all values positive
+      museData.absoluteValues[brainwave] = absoluteBrainwaveValue + 1;
     }
   }
 
@@ -91,9 +99,9 @@ udpPort.on("message", function (oscData) {
 
 setInterval(function(){
 
-  logBrainwaves();
+  // logBrainwaves();
 
-}, 1000);
+}, 1500);
 
 
 
